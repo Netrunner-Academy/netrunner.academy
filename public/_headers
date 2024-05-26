@@ -1,0 +1,10 @@
+/*
+  Strict-Transport-Security : max-age=63072000; includeSubDomains; preload
+  Content-Security-Policy: default-src 'none'; connect-src 'self'; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; form-action 'none'; frame-ancestors 'none'; object-src 'none'; require-trusted-types-for 'script'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'
+  X-Content-Type-Options : nosniff
+  Referrer-Policy : no-referrer
+  X-Frame-Options : DENY
+  X-XSS-Protection : 0
+  Permissions-Policy : accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), bluetooth=(), browsing-topics=(), camera=(), clipboard-read=(), display-capture=(), document-domain=(), encrypted-media=(), fullscreen=(), gamepad=(), geolocation=(), gyroscope=(), hid=(), idle-detection=(), interest-cohort=(), keyboard-map=(), local-fonts=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), serial=(), speaker-selection=(), usb=(), sync-xhr=(), xr-spatial-tracking=()
+  Cross-Origin-Resource-Policy : same-origin
+  Cross-Origin-Embedder-Policy : require-corp
