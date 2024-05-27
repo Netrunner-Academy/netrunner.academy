@@ -68,7 +68,7 @@ Microsoft disables this by default within Windows to prevent compatibility issue
 
 Bottom-up ASLR employs randomization during memory allocation, making the base addresses for the heap, stack, and other program segments unpredictable. This thwarts attackers exploiting vulnerabilities that depend on predetermined memory locations.<sup>[4](https://msrc.microsoft.com/blog/2017/11/clarifying-the-behavior-of-mandatory-aslr/)</sup>
 
-Bottom-up ASLR requires an application to be linked with the `/DYNAMICBASE` flag. If [Mandatory ASLR](#mandatory-aslr) is enabled, Bottom-up ASLR will apply as well. 
+Bottom-up ASLR requires an application to be linked with the `/DYNAMICBASE` flag. Bottom-up ASLR will apply to all executables if [Mandatory ASLR](#mandatory-aslr) is enabled.
 
 The image below helps visualize how and when ASLR applies to applications.
 
@@ -90,7 +90,9 @@ Let's take a look at why this matters.
 > 
 > [source](https://msrc.microsoft.com/blog/2013/12/software-defense-mitigating-common-exploitation-techniques/)
 
-As we can see based on the information Microsoft provides us, if we do not utilize high entropy ASLR an attacker could have a 1 in 256 chance of guessing the memory address correctly which would open the door for exploitation. High entropy ASLR substantially reduces the likelihood of an attacker guessing the correct memory address, and it's enabled by default for all Windows systems.
+As we can see based on the information Microsoft provides us, if we do not utilize high entropy ASLR an attacker could have a 1 in 256 chance of guessing the memory address correctly which would open the door for exploitation. High entropy ASLR substantially reduces the likelihood of an attacker guessing the correct memory address. 
+
+High Entropy ASLR applies to all executables that are protected with Bottom-Up ASLR, either by the executable opting in to the `/dynamicbase` linker option or by the user enabling [Mandatory ASLR](#mandatory-aslr).
 
 ### Structured Exception Handling Overwrite Protection (SEHOP)
 
