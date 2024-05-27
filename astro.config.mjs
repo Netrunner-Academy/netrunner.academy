@@ -5,6 +5,7 @@ import starlight from '@astrojs/starlight';
 export default defineConfig({
 	integrations: [
 		starlight({
+			favicon: '/favicon.png',
 			title: 'Netrunner Academy',
 			social: {
 				github: 'https://github.com/miahacybersec',
