@@ -7,7 +7,8 @@ export default defineConfig({
 		starlight({
 			title: 'Netrunner Academy',
 			social: {
-				github: 'https://github.com/withastro/starlight',
+				github: 'https://github.com/miahacybersec',
+				signal: 'https://signal.me/#eu/xJL5Uush7CTieP5Zd5GGCIW53o6rS2Zq4oX8Vu31FhR_MmSZgRVGPYbta2iAf4Ep'
 			},
 			sidebar: [
 				{
