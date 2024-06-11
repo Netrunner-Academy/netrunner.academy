@@ -5,20 +5,23 @@ description: A detailed look at the security systems Windows uses
 
 ## Exploit Mitigations
 
-Exploit mitigations eliminate entire classes of common vulnerabilities and exploit techniques to prevent or severely hinder exploitation. Windows has lots of mitigations built into the OS, which we will explore in more detail below.
+Exploit mitigations aim to eliminate entire classes of common vulnerabilities and exploit techniques, thereby preventing or significantly hindering exploitation. Windows includes numerous built-in mitigations, which we will explore in more detail below.
 
-Before we start discussing the details of the Windows exploit mitigations, it's important to emphasize why these mitigations are important. According to industry research, anywhere from 60-90% of vulnerabilities are caused by memory safety issues, depending on the product.<sup>[1](https://www.memorysafety.org/docs/memory-safety/#how-common-are-memory-safety-vulnerabilities)</sup> Based on Microsoft's own research, around 70% of the vulnerabilities on Windows are related to memory safety issues.<sup>[2](https://msrc.microsoft.com/blog/2019/07/we-need-a-safer-systems-programming-language/)</sup> Almost all the Windows exploit mitigations revolve around trying to prevent memory safety related security issues.
+Before delving into the specifics of Windows exploit mitigations, it’s crucial to understand their importance. Industry research indicates that 60-90% of vulnerabilities are caused by memory safety issues, depending on the product.<sup>[1](https://www.memorysafety.org/docs/memory-safety/#how-common-are-memory-safety-vulnerabilities)</sup> Microsoft's own research reveals that approximately 70% of vulnerabilities in Windows are related to memory safety issues.<sup>[2](https://msrc.microsoft.com/blog/2019/07/we-need-a-safer-systems-programming-language/)</sup> To address these problems, most Windows exploit mitigations are designed to prevent memory safety-related security issues.
 
-Windows implements:
-- Control Flow Guard
-- Data Execution Prevention
-- Mandatory ASLR
-- Bottom-up ASLR
-- High Entropy ASLR
-- SEHOP
-- Heap Integrity Validation
+Below is a chart detailing the various exploit mitigations available in Windows, their default settings, and their scope.
 
-Let's dive into each of these and what it means for Windows security.
+| Exploit Mitigations        | Default Setting  | Scope        |
+|----------------------------|------------------|--------------|
+| Control Flow Guard         | On               | System-Wide  | 
+| Data Execution Prevention  | On               | System-Wide  |
+| Mandatory ASLR             | Off              | System-Wide  |
+| Bottom-up ASLR             | On               | System-Wide  |
+| High Entropy ASLR          | On               | System-Wide  |
+| SEHOP                      | On               | System-Wide  |
+| Heap Integrity Validation  | On               | System-Wide  |
+
+Let's explore each of these exploit mitigations and their implications for security on Windows.
 
 ### Control Flow Guard (CFG)
 
@@ -38,21 +41,13 @@ Let's dive into each of these and what it means for Windows security.
 >
 > [source](https://support.microsoft.com/en-us/topic/what-is-data-execution-prevention-dep-60dabc2b-90db-45fc-9b18-512419135817)
 
-### Address Space Layout Randomization (ASLR)
+## Address Space Layout Randomization (ASLR)
 
 > Address space layout randomization (ASLR) is a computer security technique involved in preventing exploitation of memory corruption vulnerabilities. In order to prevent an attacker from reliably redirecting code execution to, for example, a particular exploited function in memory, ASLR randomly arranges the address space positions of key data areas of a process, including the base of the executable and the positions of the stack, heap and libraries.
 >
 > [source](https://en.wikipedia.org/wiki/Address_space_layout_randomization)
 
-Windows has three ASLR settings in the OS:
-
-| ASLR Settings     | Default Setting |
-|-------------------|-----------------|
-| Mandatory ASLR    | Off             |
-| Bottom-up ASLR    | On              |
-| High-Entropy ASLR | On              |
-
-Let's take a look at each of them on their own.
+Windows has three ASLR settings.
 
 ### Mandatory ASLR
 
@@ -90,16 +85,41 @@ Let's take a look at why this matters.
 > 
 > [source](https://msrc.microsoft.com/blog/2013/12/software-defense-mitigating-common-exploitation-techniques/)
 
-As we can see based on the information Microsoft provides us, if we do not utilize high entropy ASLR an attacker could have a 1 in 256 chance of guessing the memory address correctly which would open the door for exploitation. High entropy ASLR substantially reduces the likelihood of an attacker guessing the correct memory address. 
+According to Microsoft's documentation, not utilizing high entropy ASLR allows an attacker a 1 in 256 chance of correctly guessing a memory address, potentially leading to exploitation. High entropy ASLR significantly decreases the probability of an attacker successfully guessing the correct memory address.
 
-High Entropy ASLR applies to all executables that are protected with Bottom-Up ASLR, either by the executable opting in to the `/dynamicbase` linker option or by the user enabling [Mandatory ASLR](#mandatory-aslr).
+High entropy ASLR applies to all executables protected by Bottom-Up ASLR, either through the executable opting into the `/dynamicbase` linker option or by the user enabling [Mandatory ASLR](#mandatory-aslr).
 
-### Structured Exception Handling Overwrite Protection (SEHOP)
+## Structured Exception Handling Overwrite Protection (SEHOP)
 
 > Structured Exception Handling Overwrite Protection (SEHOP) helps prevent attackers from being able to use malicious code to exploit the Structured Exception Handling (SEH), which is integral to the system and allows (non-malicious) apps to handle exceptions appropriately. Because this protection mechanism is provided at run-time, it helps to protect applications regardless of whether they've been compiled with the latest improvements.
 > 
 > [source](https://learn.microsoft.com/en-us/windows/security/threat-protection/overview-of-threat-mitigations-in-windows-10#structured-exception-handling-overwrite-protection)
 
-### Validate Heap Integrity
+## Validate Heap Integrity
 
-Validate heap integrity is a rather simple exploit mitigation. If heap corruption is detected in any application, it is automatically terminated. This applies to all applications, including system-level application.
+Validate Heap Integrity is a straightforward yet effective exploit mitigation. When heap corruption is detected in any application, the application is automatically terminated. If enabled, this measure applies universally to all applications.
+
+## App-Level Mitigation Settings
+
+Windows offers numerous additional exploit mitigations that can significantly enhance its security. However, these settings are only configurable on a per-application basis and cannot be enabled system-wide. Users can configure these mitigations through PowerShell or the Windows Defender GUI, but applications themselves cannot automatically opt in to these protections.
+
+Because these settings must be configured individually for each application, requiring the specific path for each one, comprehensive documentation on these exploit mitigations will not be provided by Netrunner Academy.
+
+| Exploit Mitigations                 | Scope     |
+|-------------------------------------|-----------|
+| Arbitrary Code Guard                | App Level |
+| Block Low Integrity Images          | App Level |
+| Block Remote Images                 | App Level |
+| Block Untrust Fonts                 | App Level |
+| Code Integrity Guard                | App Level |
+| Disable Extension Points            | App Level |
+| Disabled Win32k Calls               | App Level |
+| Don't Allow Child Processes         | App Level |
+| Export Address Filtering            | App Level |
+| Import Address Filtering            | App Level |
+| Simulate Execution                  | App Level |
+| Validate API Invocation             | App Level |
+| Validate Handle Usage               | App Level |
+| Validate Image Dependency Integrity | App Level |
+| Validate Stack Integrity            | App Level |
+
