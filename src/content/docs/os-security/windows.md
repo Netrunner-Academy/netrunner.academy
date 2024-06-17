@@ -23,7 +23,7 @@ Below is a chart detailing the various exploit mitigations available in Windows,
 
 Let's explore each of these exploit mitigations and their implications for security on Windows.
 
-### Control Flow Guard (CFG)
+## Control Flow Guard (CFG)
 
 > Control Flow Guard (CFG) is a highly-optimized platform security feature that was created to combat memory corruption vulnerabilities. By placing tight restrictions on where an application can execute code from, it makes it much harder for exploits to execute arbitrary code through vulnerabilities such as buffer overflows. CFG extends previous exploit mitigation technologies such as [/GS](https://learn.microsoft.com/en-us/cpp/build/reference/gs-buffer-security-check?view=msvc-170), [DEP](#data-execution-prevention), and [ASLR](#address-space-layout-randomization-aslr).
 >
@@ -33,7 +33,7 @@ Let's explore each of these exploit mitigations and their implications for secur
 >
 > [source](https://learn.microsoft.com/en-us/windows/win32/secbp/control-flow-guard#how-does-cfg-really-work)
 
-### Data Execution Prevention
+## Data Execution Prevention
 
 > Data Execution Prevention (DEP) is a technology built into Windows that helps protect you from executable code launching from places it's not supposed to. DEP does that by marking some areas of your PC's memory as being for data only, no executable code or apps will be allowed to run from those areas of memory.
 >
