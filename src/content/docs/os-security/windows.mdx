@@ -2,6 +2,7 @@
 title: Windows Security
 description: A detailed look at the security systems Windows uses
 ---
+import { Aside } from '@astrojs/starlight/components';
 
 ## Exploit Mitigations
 
@@ -49,6 +50,8 @@ Let's explore each of these exploit mitigations and their implications for secur
 
 Windows has three ASLR settings.
 
+<Aside>Windows ASLR has some oddities which might be important to know if security is critical for you or your workplace. See [ASLR Oddities](#aslr-oddities) for more information.</Aside>
+
 ### Mandatory ASLR
 
 By default, Windows only enables ASLR for executables and DLLs which opt-in by linking with the `/DYNAMICBASE` flag. This flag has been enabled by default since Visual Studio 2010, but it's still possible for applications to opt out to avoid non-trivial compatibility issues with existing applications.<sup>[3](https://msrc.microsoft.com/blog/2017/11/clarifying-the-behavior-of-mandatory-aslr/)</sup>
@@ -72,7 +75,7 @@ The image below helps visualize how and when ASLR applies to applications.
 
 ### High Entropy ASLR
 
-The `/HIGHENTROPYVA` compiler flag specifies support for high-entropy 64-bit ASLR. This means that the executable image can utilize a larger address space for randomization, leading to higher entropy. However, it's important to note that if an application saves pointers in 32-bit variables, using high entropy could potentially truncate the 64-bit address, leading to application crashes. This issue is more likely with older programs that are not linked with the `/dynamicbase` linker option.<sup>[5](https://learn.microsoft.com/en-us/cpp/build/reference/highentropyva?view=msvc-170)</sup>
+The `/HIGHENTROPYVA` and `/LARGEADDRESSAWARE` compiler flags specify support for high-entropy 64-bit ASLR. This means that the executable image can utilize a larger address space for randomization, leading to higher entropy. However, it's important to note that if an application saves pointers in 32-bit variables, using high entropy could potentially truncate the 64-bit address, leading to application crashes. This issue is more likely with older programs that are not linked with the `/dynamicbase` linker option.<sup>[5](https://learn.microsoft.com/en-us/cpp/build/reference/highentropyva?view=msvc-170)</sup>
 
 Let's take a look at why this matters.
 
@@ -88,6 +91,32 @@ Let's take a look at why this matters.
 According to Microsoft's documentation, not utilizing high entropy ASLR allows an attacker a 1 in 256 chance of correctly guessing a memory address, potentially leading to exploitation. High entropy ASLR significantly decreases the probability of an attacker successfully guessing the correct memory address.
 
 High entropy ASLR applies to all executables protected by Bottom-Up ASLR, either through the executable opting into the `/dynamicbase` linker option or by the user enabling [Mandatory ASLR](#mandatory-aslr).
+
+## ASLR Oddities
+
+Windows ASLR does not behave as one would expect. All of these odd behaviours are documented in their respective subsections
+
+### Windows 10 Aggressively Reuses Memory Addresses
+
+> Observe that even if a Windows system must ensure that multiple instances of one DLL or EXE all get loaded at the same base address, the system need not keep track of the base address once the last instance of the DLL or EXE is unloaded. If the DLL or EXE is loaded again, it can get a fresh base address.
+>
+> This is the behavior we observed in working with Windows 7. Windows 10 can work differently. Even after the last instance of a DLL or EXE unloads, it may maintain the same base address at least for a short period of time—more so for EXEs than DLLs. This can be observed when repeatedly launching a command-line utility under a multi-process debugger. However, if the utility is copied to a new filename and then launched, it receives a fresh base address. Likewise, if a sufficient duration has passed, the utility will load at a different base address. Rebooting, of course, generates fresh base addresses for all DLLs and EXEs.
+>
+> [Source](https://cloud.google.com/blog/topics/threat-intelligence/six-facts-about-address-space-layout-randomization-on-windows)
+
+There is currently no information on whether this applies to Windows 11. To be safe, assume Windows 11 behaves the same as Windows 10.
+
+### Windows Hibernate and Sleep Modes May Reuse Memory Addresses
+
+#### Hibernation
+
+In Windows there is a setting known as Fast Startup which allows for your computer to start up faster after a shutdown. Windows accomplishes this by utilizing hibernation.
+
+Hibernation works by saving a `Hiberfil.sys` system file to the root of the drive where the operating system is installed. The `Hiberfil.sys` file stores a copy of the system memory onto the drive every time your computer enters hibernation. This means that booting from hibernation allows Windows to reuse the same memory addresses for processes that were running before entering hibernation.<sup>[6](https://learn.microsoft.com/en-us/troubleshoot/windows-client/setup-upgrade-and-drivers/disable-and-re-enable-hibernation#more-information)</sup>
+
+#### Sleep
+
+Windows sleep mode is similar to hibernation, but it keeps all processes running in RAM rather than saving RAM to the disk. This means that booting from sleep allows Windows to reuse the same memory addresses for processes that were running before entering sleep.
 
 ## Structured Exception Handling Overwrite Protection (SEHOP)
 
@@ -123,3 +152,4 @@ Because these settings must be configured individually for each application, req
 | Validate Image Dependency Integrity | App Level |
 | Validate Stack Integrity            | App Level |
 
+## 
