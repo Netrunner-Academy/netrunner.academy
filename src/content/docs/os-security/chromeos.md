@@ -60,6 +60,45 @@ Manatee is under active development by Google, but as of June 23, 2024 it is not
 ![](../../../assets/cros-vms.png)
 Image from [Zack Reizner's BlinkOn conference presentation](https://youtu.be/BD_lcnkNAk4?feature=shared&t=925)
 
+The shell inside of the Linux environment is running over a vsock which is exposed to users over CroSH.
+
+### Garcon
+
+Garcon is a daemon that runs inside Linux containers on Chrome OS devices. Its primary purpose is to facilitate bi-directional communication between the container and the host system, enabling seamless integration of Linux applications within the Chrome OS ecosystem.
+
+It connects to [concierge](#concierge) with gRPC over vsock. 
+
+Host system IP tables rules prevent external connections to Garcon sockets
+
+It runs entirely within the Linux container. 
+
+### Virtio-Wayland
+
+Uses a custom virtio-based protocol. The device implementation is in CrosVM while the driver implementation is in the guest kernel. CrosVM makes host-side wayland connections, buffers, and pipes on behalf of the guest kernel.
+
+There is also a user-space component called [Sommelier](#sommelier).
+
+### Sommelier
+
+Implementing X11 over wayland usually means the compositor gives X11 applications extra privileges which ordinary wayland applications don't have. Sommelier doesn't grant applications those privileges, but rather tricks them into thinking they have them. This is to keep good security while being very useful.
+
+### LXD
+
+Run by [Maitred](#maitred). Responsible for downloading, creating and running containers. While the default is a Crostini-flavoured Debian, any Linux distribution that LXC supports can be used (Arch, Gentoo, Kali, etc.).
+
+### Termina
+
+Read-only, dm-verity verified. Downloaded, updated and verified by component updater. Termina is the ChromeOS "baseboard", tatl for x86, tael for ARM.
+
+### Limitations
+
+- No "super" apps - screen locks, screen capture, accessibility tools
+- No raw access to hardware devices
+- No data link layer access (i.e. layer 2 network access)
+- No KVM access
+- No access to Chrome data (history, cookies, Google account)
+- No sound, USB peripherals, GPU access, IPv6
+
 ## Core Scheduling
 
 Recent CPU vulnerabilities, particularly those targeting hyperthreading, have highlighted security risks. The discovery of [Microarchitectural Data Sampling (MDS) attacks](https://mdsattacks.com/), like [Rogue In-Flight Data Load (RIDL)](https://mdsattacks.com/files/ridl.pdf) and [fallout](https://mdsattacks.com/files/fallout.pdf), allows malicious actors to exploit weaknesses within a CPU core. These attacks enable one hyperthread to glean sensitive data from another by analyzing side-channel information. While disabling hyperthreading is a typical defense against such vulnerabilities, it often comes at the expense of processing speed.<sup>[3](https://chromeos.dev/en/posts/improving-chromeos-performance-with-core-scheduling)</sup> Google's bug hunters blog has an [excellent writeup on MDS attacks](https://bughunters.google.com/blog/4712170091839488/no-more-speculation-exploiting-cpu-side-channels-for-real) for those that want to learn more about MDS vulnerabilities.
@@ -98,6 +137,26 @@ The image below shows what this looks like:
 ## Crosvm
 
 ChromeOS utilizes crosvm, a lightweight virtual machine monitor (VMM), to securely run both Linux applications and Android environments. Prioritizing security, crosvm isolates these untrusted environments within sandboxes. Written in Rust, a memory-safe language, crosvm minimizes the risk of vulnerabilities. Each virtual device, like disks and network interfaces, runs within its own minijail sandbox, further restricting potential exploits. This multi-layered approach ensures that even a compromised Linux instance or Android container cannot escape the sandbox and harm the core ChromeOS system. Crosvm strengthens this security by enforcing a syscall security policy, meticulously controlling which system calls guest Linux devices and Android containers can execute.<sup>[7](https://crosvm.dev/book/introduction.html)</sup>
+
+## Concierge
+
+Concierge is repsonsible for the lifecycle of CrosVM. It connects to Chrome over D-Bus and to Maitred over vsock. Maitred starts the network and ensures each VM gets its own IP within the Chromebook. 
+
+## Maitred
+
+Maitred communicates over gRPC over vsock.
+
+## Minijail
+
+Minijail is used extensively within ChromeOS to heavily sandbox and isolate processes. It utilizes namespace isolation, seccomp filtering, 
+
+[ChromeOS permission broker](https://chromium.googlesource.com/chromiumos/platform2/+/HEAD/permission_broker)
+
+## SELinux
+
+A lot of SELinux policies are imported from AOSP.
+
+[SELinux ChromeOS policies](https://chromium.googlesource.com/chromiumos/platform2/+/HEAD/sepolicy/)
 
 ## Venus
 
