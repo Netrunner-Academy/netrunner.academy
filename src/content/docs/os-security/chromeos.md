@@ -55,22 +55,15 @@ Manatee is under active development by Google, but as of June 23, 2024 it is not
 
 ## Linux Dev Environment (Crostini)
 
-🚧 UNDER CONSTRUCTION 🚧
+The majority of security features for Crostini are used for ARCVM as well. See [CrosVM](#crosvm) for detailed documentation.
 
-![](../../../assets/cros-vms.png)
-Image from [Zack Reizner's BlinkOn conference presentation](https://youtu.be/BD_lcnkNAk4?feature=shared&t=925)
+### Chunnel
 
-The shell inside of the Linux environment is running over a vsock which is exposed to users over CroSH.
-
-### Garcon
-
-Garcon is a daemon that runs inside Linux containers on Chrome OS devices. Its primary purpose is to facilitate bi-directional communication between the container and the host system, enabling seamless integration of Linux applications within the Chrome OS ecosystem.
-
-It connects to [concierge](#concierge) with gRPC over vsock. 
-
-Host system IP tables rules prevent external connections to Garcon sockets
-
-It runs entirely within the Linux container. 
+> chunnel tunnels traffic for servers that listen on localhost. This is a common developer use case since localhost is allowed as a secure origin in Chrome.
+> 
+> The chunneld binary runs on the Chrome OS host, and receives updates from vm_cicerone notifying it of ports that should be listened to. When Chrome connects to localhost:port, chunneld will accept the connection, open a vsock listener, and launch the chunnel binary in the target container which will connect back to chunneld.
+> 
+> [source](https://chromium.googlesource.com/chromiumos/platform2/+/HEAD/vm_tools/#chunnel)
 
 ### Virtio-Wayland
 
@@ -90,6 +83,12 @@ Run by [Maitred](#maitred). Responsible for downloading, creating and running co
 
 Read-only, dm-verity verified. Downloaded, updated and verified by component updater. Termina is the ChromeOS "baseboard", tatl for x86, tael for ARM.
 
+### Tremplin
+
+> Tremplin is the “springboard” daemon that runs in the Termina VM and exposes a gRPC interface for managing LXD containers.
+>
+> [source](https://chromium.googlesource.com/chromiumos/platform/tremplin/+/master/)
+
 ### Limitations
 
 - No "super" apps - screen locks, screen capture, accessibility tools
@@ -98,6 +97,18 @@ Read-only, dm-verity verified. Downloaded, updated and verified by component upd
 - No KVM access
 - No access to Chrome data (history, cookies, Google account)
 - No sound, USB peripherals, GPU access, IPv6
+
+### Notificationd
+
+> notificationd is a new daemon which catches the notification request from Crostini apps via D-BUS and forwards it to Chrome OS (host) via Wayland.
+>
+> [source](https://chromium.googlesource.com/chromiumos/platform2/+/HEAD/vm_tools/notificationd/)
+
+### Upgrade Container
+
+> upgrade_container is executed inside a container by [Tremplin](#tremplin) to upgrade the container e.g. a Debian Stretch container to Debian Buster.
+> 
+> [source](https://chromium.googlesource.com/chromiumos/platform2/+/HEAD/vm_tools/#upgrade_container)
 
 ## Core Scheduling
 
@@ -138,13 +149,54 @@ The image below shows what this looks like:
 
 ChromeOS utilizes crosvm, a lightweight virtual machine monitor (VMM), to securely run both Linux applications and Android environments. Prioritizing security, crosvm isolates these untrusted environments within sandboxes. Written in Rust, a memory-safe language, crosvm minimizes the risk of vulnerabilities. Each virtual device, like disks and network interfaces, runs within its own minijail sandbox, further restricting potential exploits. This multi-layered approach ensures that even a compromised Linux instance or Android container cannot escape the sandbox and harm the core ChromeOS system. Crosvm strengthens this security by enforcing a syscall security policy, meticulously controlling which system calls guest Linux devices and Android containers can execute.<sup>[7](https://crosvm.dev/book/introduction.html)</sup>
 
-## Concierge
+![](../../../assets/cros-vms.png)
+Image from [Zack Reizner's BlinkOn conference presentation](https://youtu.be/BD_lcnkNAk4?feature=shared&t=925)
 
-Concierge is repsonsible for the lifecycle of CrosVM. It connects to Chrome over D-Bus and to Maitred over vsock. Maitred starts the network and ensures each VM gets its own IP within the Chromebook. 
+### Cicerone
 
-## Maitred
+> vm_cicerone is a system daemon that runs in Chrome OS userspace and is responsible for all communication directly with the container in a VM. It exposes a [D-Bus API](https://chromium.googlesource.com/chromiumos/platform/system_api/+/HEAD/dbus/vm_cicerone) for doing things such as launching applications in containers, getting icons from containers and other container related functionality as it is extended. It also sends out signals for starting/stopping of containers.
+>
+> [Concierge](#concierge) communicates with vm_cicerone to keep the list of running VMs in sync and also to retrieve status of containers and get security tokens.
+>
+> When cicerone communicates with a container, it is interacting with the garcon component running inside of that container and is doing so over gRPC.
+>
+> [source](https://chromium.googlesource.com/chromiumos/platform2/+/HEAD/vm_tools/README.md#vm_cicerone)
 
-Maitred communicates over gRPC over vsock.
+### Concierge
+
+> vm_concierge is a system daemon that runs in Chrome OS userspace and is responsible for managing the lifetime of all VMs. It exposes a [D-Bus API](https://chromium.googlesource.com/chromiumos/platform/system_api/+/HEAD/dbus/vm_concierge/) for starting and stopping VMs.
+> 
+> When vm_concierge receives a request to start a VM it allocates various resources for that VM (IPv4 address, vsock context id, etc) from a shared pool of resources. It then launches a new instance of [crosvm](#crosvm) to actually run the VM.
+> 
+> Once the VM has started up vm_concierge communicates with the maitred instance inside the VM to finish setting it up. This includes configuring the network and mounting disk images.
+> 
+> [source](https://chromium.googlesource.com/chromiumos/platform2/+/HEAD/vm_tools/README.md#vm_concierge)
+ 
+### Garcon
+
+> Garcon is a daemon that runs inside of a container within a VM. gRPC is used to communicate between vm_cicerone and garcon. It is used to control/query things inside the container such as application launching, accessibility, handling intents, opening files, etc. The communication is bi-directional. It uses TCP/IP for the transport and firewall rules ensure that only the container IPs are allowed to connect to the corresponding port for garcon that is open in [vm_cicerone](#cicerone).
+>
+> [source](https://chromium.googlesource.com/chromiumos/platform2/+/HEAD/vm_tools/README.md#garcon)
+
+### Maitred
+
+> Maitred is the agent running inside the VM responsible for managing the VM instance. It acts as the init system, starting up system services, mounting file systems, and launching the container with the actual application that the user wants to run. It is responsible for shutting down the VM once the user's application exits or if requested to by vm_concierge.
+> 
+> [source](https://chromium.googlesource.com/chromiumos/platform2/+/HEAD/vm_tools/README.md#maitred)
+
+### Seneschal
+
+> seneschal is the steward of the user's /home directory. It manages processes that serve the [9p file system protocol](https://man.cat-v.org/plan_9/5/0intro). The 9p client lives in the guest kernel and communicates with the server over [vsock](https://lwn.net/Articles/695981/).
+> 
+> Each server initially does not have access to any path but can be granted access to specific paths in the user‘s home directory by sending requests over dbus to seneschal. These paths are bind-mounted into the server’s root directory and become visible to the 9p clients of that server.
+> 
+> This makes it possible to share different sets of paths with different VMs by giving each of them access to a different 9p server.
+> 
+> [source](https://chromium.googlesource.com/chromiumos/platform2/+/HEAD/vm_tools/#seneschal)
+
+### 9s
+
+> 9s is program that serves the [9p file system protocol](https://man.cat-v.org/plan_9/5/0intro). [seneschal](#seneschal) launches one instance of this program for each VM started by the user. It is a small wrapper around the p9 rust library.
 
 ## Minijail
 
