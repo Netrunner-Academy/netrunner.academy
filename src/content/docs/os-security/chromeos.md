@@ -5,8 +5,6 @@ description: A detailed look at the security of ChromeOS
 
 ChromeOS is the most secure consumer OS currently on the market. It employs an extremely extensive defence-in-depth security model. 
 
-**NOTE: These docs are still under active development.**
-
 ## Update Cycle
 
 ChromeOS follows the weekly Chrome release cycle.<sup>[1](https://security.googleblog.com/2023/08/an-update-on-chrome-security-updates.html)</sup> This can be verified by checking the [Chrome updates page](https://chromereleases.googleblog.com/search/label/Stable%20updates) which shows ChromeOS getting weekly stable updates.
