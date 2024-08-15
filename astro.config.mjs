@@ -24,7 +24,7 @@ export default defineConfig({
 					collapsed: true,
 					items: [
 						{ label: 'ChromeOS', link: '/os-security/chromeos/'},
-						{ label: 'MacOS', link: '/os-security/macos/'},
+						{ label: 'macOS', link: '/os-security/macos/'},
 						{ label: 'Windows', link: '/os-security/windows/'}
 					]
 				},
