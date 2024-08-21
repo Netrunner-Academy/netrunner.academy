@@ -3,11 +3,9 @@ title: Linux Security
 description: A detailed look at the (nightmarish) security of Linux
 ---
 
-🚨 **These docs are still under active development** 🚨
-
 Linux security has always been a sensitive subject in the industry, and this article will no doubt start some fires.
 
-Before diving into the security practices of the OS, let's make one thing clear. Linux runs our modern world - ChromeOS, Android phones and TVs, cars, fridges, smart devices. It's an amazing operating system and we should all appreciate it for that.
+Before diving into the security practices of the OS, let's make one thing clear. Linux runs our modern world - ChromeOS, Android phones and TVs, cars, fridges, smart devices. It's an amazing operating system and we should all appreciate it for that. Due to the widespread use of Linux, it is one of the most mission-critical pieces of software to ever exist, and as such should be held to extremely high security standards.
 
 This article is not meant to cause any wars, nor is it meant to call out any individual developers of the operating system. The industry widely accepts that Linux security is fundamentally flawed and needs a serious overhaul to provide the security necessary in today's world. Hopefully, this article will inform both those that are experience with Linux, and those with very little. The hope is to encourage Linux security to be better.
 
@@ -20,6 +18,8 @@ The Linux developer ecosystem is unique in many ways, with a culture and practic
 ### Stable Release
 
 A large amount of distributions such as Ubuntu, Debian, RHEL, Rocky Linux, Oracle Linux, and CentOS are categorized as "stable release" Linux distributions and always use the long-term support (LTS) kernel. Stable release Linux distributions use outdated packages, only ever backporting security fixes when a CVE has been reported. While this sounds good in practice, a large amount of security vulnerabilities never get assigned a CVE, and as such are never backported to a stable release distribution.
+
+Additionally, backports are not always a proper fix as claimed. There are [many](https://x.com/grsecurity/status/1076928429306667008) [different](https://seclists.org/oss-sec/2018/q4/110) [examples](https://x.com/grsecurity/status/1068831530125008897) of backports taking 6-12 months, and [many](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=90a7b84679dedb23660ed46976b964b8bf7f3a55) [more](https://lore.kernel.org/stable/20200922110703.720960-2-m.v.b@runbox.com/) [examples](https://www.spinics.net/lists/stable/msg328591.html) of backports either introducing a new vulnerability, or breaking something.
 
 Research from Chainguard in 2024 analyzed over 600 open source projects which [contained over 100 security fixes that were never assigned a CVE](https://www.chainguard.dev/unchained/vulnerability-fixes-in-plain-sight-how-your-scanners-are-missing-hundreds-of-vulnerabilities).
 
@@ -35,9 +35,30 @@ Debian hosts a security tracker which shows [a very large number of vulnerable p
 
 Ubuntu has a whole blog post explaining how they fix security problems within the distribution and its packages. They have maintainers [manually check the CVE databases to see if packages within Ubuntu are vulnerable, and then manually backport each fix](https://ubuntu.com/blog/securing-open-source-through-cve-prioritisation).
 
+### Rolling Release
+
+Rolling release distributions tend to use the stable kernel and includes distributions such as Arch Linux. Due to using the mainline kernel, all vulnerabilities are patched even if there is no published CVE, unlike with stable releases. 
+
+The core Linux developers claim is that [everyone should be using the latest version of the Linux kernel](https://kernel-recipes.org/en/2019/talks/cves-are-dead-long-live-the-cve/) as that's the only way to ensure you have all the latest fixes, vulnerability or not. However, this claim falls apart due to the lack of developer standards within the Linux kernel. The Linux kernel allows for new features and bug fixes to be merged without tests or fuzzing. To make matters worse, the code coverage of the Linux kernel is currently unknown. This lack of developer standards has created a culture that allows for new features and bug fixes to be merged without testing or fuzzing, which themselves may introduce new vulnerabilities or be poorly documented.
+
+In an attempt to address some of these issues, [Google has been fuzzing the Linux kernel for years](https://github.com/google/syzkaller), foundations such as the [OpenSSF (Open Source Security Foundation)](https://openssf.org/) have been created, and various companies like [Microsoft](https://www.microsoft.com/en-us/security/blog/2020/08/03/microsoft-open-source-security-foundation-founding-member-securing-open-source-software/) have begun paying employees to work full-time on securing the Linux kernel.
+
+### Stable Release vs Rolling Release
+
+So if stable releases do not contain all vulnerability fixes from upstream, but rolling releases contain all vulnerability fixes alongside new unknown vulnerabilities, what is the best approach? It's really a damned if you do and damned if you don't situation, regardless of which option you choose.
+
+Google has an entire blog post about [Linux kernel security done right](https://security.googleblog.com/2021/08/linux-kernel-security-done-right.html) which explains that if you are not using the latest stable kernel, you're leaving yourself vulnerable. Their conclusion is the same as what is mentioned above in the [stable release](#stable-release) section; developers should focus their efforts on upstream contributions to increase overall efficiency of bug fixes, reduce time to patching, and reduce the sheer amount of redundant work being done on each distribution backporting their own fixes.
+
+One solution that is used in Android is [tracking the upstream stable kernel releases, but discarding all the new features](https://security.googleblog.com/2021/08/linux-kernel-security-done-right.html#:~:text=Android%20vendors%20do%20now%2C%20thankfully%2C%20track%20stable%20kernel%20releases.%20So%20even%20though%20the%20features%20being%20added%20to%20newer%20major%20kernels%20will%20be%20missing%2C%20all%20the%20latest%20stable%20kernel%20fixes%20are%20present.). This creates a balance of receiving all the latest vulnerability fixes while also ensuring unnecessary new features and attack surface are not being introduced. Unfortunately, no Linux distributions appear to be taking this approach at the time of writing.
+
 ### Duplicated Efforts
 
-At the time of writing, there are 6 LTS kernels and 1 stable kernel.
+At the time of writing, there are 6 LTS kernels and 1 stable kernel according to [kernel.org](https://kernel.org/). However, [kernel.org](https://kernel.org) does not list every Linux kernel that exists.
 
 ![](../../../assets/linux_kernels.png)
 
+Lots of distributions such as Ubuntu maintain their own forks of the Linux kernel with their own [modifications](https://ubuntu.com/blog/ubuntu-23-10-restricted-unprivileged-user-namespaces) [and changes](https://ubuntu.com/blog/whats-new-in-security-for-ubuntu-24-04-lts).
+
+Each distribution compiles the kernel differently and may apply its own patches on top. This leads to situations where multiple Linux distributions may be running the same kernel version, but each kernel enables/disables different features of the kernel, applies its own patches, uses its own security policies, _and_ maintains its own backported security fixes.
+
+This process creates a lot of unnecessary duplicated effort within the Linux community. In an ideal world, all distributions would contribute upstream so that all Linux users would benefit, but unfortunately this is not the case.
