@@ -15,7 +15,7 @@ Desktop OSs are very lacking compared to Mobile OSs. There are several Articles 
 
 - [Linux Security](https://netrunner.academy/os-security/linux/)
 
-There are many reasons as to why Mobile OSs are far superior to Desktop. In the case of linux, the lack of a proper security model, strong app sandboxing, verified boot and exploit mitigations are all lacking or not implemented at all.
+There are many reasons as to why Mobile OSs are far superior to Desktop. In the case of Linux, the lack of a proper security model, strong app sandboxing, verified boot and exploit mitigations are all lacking or not implemented at all.
 Lastly, the monolitic nature of the Linux kernel itself makes it a huge attack vector. [User namespaces](https://www.man7.org/linux/man-pages/man7/user_namespaces.7.html) are another big issue, as they allow unprivileged users to interact with parts of the kernel which are normally 
 reserved for root. Unsurprisingly this causes many possibilities for privilege escalation. [Secureblue](https://github.com/secureblue/secureblue) attempts to fix this by providing images without user namespaces, however this breaks functionality like [Toolbox](https://containertoolbx.org/),
 as they put it: 
