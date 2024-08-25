@@ -15,6 +15,15 @@ Desktop OSs are very lacking compared to Mobile OSs. There are several Articles 
 
 - [Linux Security](https://netrunner.academy/os-security/linux/)
 
+There are many reasons as to why Mobile OSs are far superior to Desktop. In the case of linux, the lack of a proper security model, strong app sandboxing, verified boot and exploit mitigations are all lacking or not implemented at all.
+Lastly, the monolitic nature of the Linux kernel itself makes it a huge attack vector. [User namespaces](https://www.man7.org/linux/man-pages/man7/user_namespaces.7.html) are another big issue, as they allow unprivileged users to interact with parts of the kernel which are normally 
+reserved for root. Unsurprisingly this causes many possibilities for privilege escalation. [Secureblue](https://github.com/secureblue/secureblue) attempts to fix this by providing images without user namespaces, however this breaks functionality like [Toolbox](https://containertoolbx.org/),
+as they put it: 
+
+> However, some see this as still a preferable tradeoff (trusting one small program with root in exchange for reducing the kernel's attack surface). Ultimately we leave both options available because it's a tradeoff and neither is demonstrably preferable from a security standpoint. It should also be noted that podman, toolbox, and distrobox require unprivileged user namespaces to function and are therefore [removed in the non-userns images](https://github.com/secureblue/secureblue/blob/live/config/common/disableuserns-packages.yml).
+
+[source](https://github.com/secureblue/secureblue/blob/live/USERNS.md)
+
 ## [Windows](https://netrunner.academy/os-security/windows/)
 Windows is better in some aspects, but it's not great either. Most users install apps by downloading exe files from the Internet, without any execution restrictions. 
 Microsoft has attempted to fix this issue by introducing it's store, S-mode, Smart App Control and Applocker. 
