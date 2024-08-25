@@ -21,7 +21,7 @@ reserved for root. Unsurprisingly this causes many possibilities for privilege e
 as they put it: 
 
 > However, some see this as still a preferable tradeoff (trusting one small program with root in exchange for reducing the kernel's attack surface). Ultimately we leave both options available because it's a tradeoff and neither is demonstrably preferable from a security standpoint. It should also be noted that podman, toolbox, and distrobox require unprivileged user namespaces to function and are therefore [removed in the non-userns images](https://github.com/secureblue/secureblue/blob/live/config/common/disableuserns-packages.yml).
-> [source](https://github.com/secureblue/secureblue/blob/live/USERNS.md)
+[source](https://github.com/secureblue/secureblue/blob/live/USERNS.md)
 
 ## [Windows](https://netrunner.academy/os-security/windows/)
 Windows is better in some aspects, but it's not great either. Most users install apps by downloading exe files from the Internet, without any execution restrictions. 
