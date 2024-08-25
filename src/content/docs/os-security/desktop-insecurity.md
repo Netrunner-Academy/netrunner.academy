@@ -41,4 +41,6 @@ ChromeOS is regarded as the most secure desktop os by many and follows the ideol
 
 ## [GrapheneOS](https://grapheneos.org)
 GrapheneOS isn't a Desktop OS, it's an OS built from the base of the [Android Open Source Project (AOSP)](https://source.android.com/) and is arguably the most secure OS there is.
+However, The much awaited [Desktop mode](https://www.androidauthority.com/android-15-desktop-mode-demo-3430991/) feature is not yet released and the low power nature of mobile devices and software limitations
+make it impossible to use for many workflows, such as software development.
 
