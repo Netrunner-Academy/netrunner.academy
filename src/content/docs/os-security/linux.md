@@ -25,7 +25,7 @@ Research from Chainguard in 2024 analyzed over 600 open source projects which [c
 
 A study from Springer in 2022 found that [37.19% of Linux kernel vulnerabilities never use terminology in the commit log to imply a security fix](https://orbilu.uni.lu/bitstream/10993/54305/1/emse-SSPCatcher-Arthur.pdf). Furthermore, this study shows that 147,746 commits contained the words "bug", "vuln", or "fix", of which only 986 were for known CVEs. It should be noted however that the exact number of commits in this dataset that correlated to fixing a vulnerability is unknown.
 
-![](../../../assets/linux_vulnerabilities.png)
+![](../../../assets/linux/linux_vulnerabilities.png)
 
 A study from North Carolina state university in 2023 created a dataset of the 1000 latest commits in the NPM, Python, Go, PyPI, and Maven projects. They found that [52.86% of projects silently fixed vulnerabilities](https://enck.org/pubs/dunlap-eurosp23.pdf). 
 
@@ -55,7 +55,7 @@ One solution that is used in Android is [tracking the upstream stable kernel rel
 
 At the time of writing, there are 6 LTS kernels and 1 stable kernel according to [kernel.org](https://kernel.org/). However, [kernel.org](https://kernel.org) does not list every Linux kernel that exists.
 
-![](../../../assets/linux_kernels.png)
+![](../../../assets/linux/linux_kernels.webp)
 
 Lots of distributions such as Ubuntu maintain their own forks of the Linux kernel with their own [modifications](https://ubuntu.com/blog/ubuntu-23-10-restricted-unprivileged-user-namespaces) [and changes](https://ubuntu.com/blog/whats-new-in-security-for-ubuntu-24-04-lts).
 

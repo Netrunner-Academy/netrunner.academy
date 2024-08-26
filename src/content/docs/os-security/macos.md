@@ -15,7 +15,7 @@ Apple has [implemented BlastDoor in Swift](https://googleprojectzero.blogspot.co
 
 In the following image, we see a visual representation of what BlastPass is doing internally. 
 
-![](../../../assets/blastpass.png)
+![](../../../assets/macos/blastpass.png)
 [Image from Google's Project Zero Blog](https://googleprojectzero.blogspot.com/2021/01/a-look-at-imessage-in-ios-14.html)
 
 > Historically, ASLR on Apple’s platforms had one architectural weakness: the shared cache region, containing most of the system libraries in a single prelinked blob, was only randomized per boot, and so would stay at the same address across all processes. This turned out to be especially critical in the context of 0-click attacks, as it allowed an attacker, able to remotely observe process crashes (e.g. through timing of automatic delivery receipts), to infer the base address of the shared cache and as such break ASLR, a prerequisite for subsequent exploitation steps.
@@ -63,7 +63,7 @@ cryptographic material
 > • Enable users to change their password (and in turn, the cryptographic keys used to
 protect their files) without requiring reencryption of the entire volume
 > 
-> ![](../../../assets/filevault.png)
+> ![](../../../assets/macos/filevault.webp)
 > 
 > On a Mac with Apple Silicon a Mac with a T2 chip, all FileVault key handling occurs in the
 Secure Enclave; encryption keys are never directly exposed to the Intel CPU. By default,
@@ -121,7 +121,7 @@ That being said, at the time of writing in August of 2024, there are currently n
 
 When a mac boots, it goes through the following process.
 
-![](../../../assets/mac_boot_process.png)
+![](../../../assets/macos/mac_boot_process.png)
 [Image from Apple's security documentation](https://help.apple.com/pdf/security/en_US/apple-platform-security-guide.pdf), page 33
 
 > The chip executes code from the Boot ROM in the first step in the chain of trust. macOS
@@ -201,7 +201,7 @@ sandboxing and Data Vault.
 
 Apple's silicon has built-in security features which are detailed in the chart below.
 
-![](../../../assets/apple_silicon_security.png)
+![](../../../assets/macos/apple_silicon_security.webp)
 
 ## Sandboxing
 
@@ -220,8 +220,8 @@ Within the context of XNU, type confusion was utilized in [almost all attacks](h
 
 > As a rough approximation for the set of all 194 types, the table below displays all core XNU types that could ever colocate with ip6_pktopts and also the fields of each that could potentially be useful for an exploit. The “Allocatable” column describes whether userspace can allocate instances of this type, and the “Privileges” column describes any special privileges needed to do so. The other columns represent the fields of ip6_pktopts, and the color of each cell represents how the type confusion would manipulate the overlapped field of the replacement type. All empty cells were deemed uninteresting.
 
-![](../../../assets/xnu_type_chart.png)
-![](../../../assets/xnu_type_chart_key.png)
+![](../../../assets/macos/xnu_type_chart.png)
+![](../../../assets/macos/xnu_type_chart_key.png)
 [Images from Apple's security blog](https://security.apple.com/blog/what-if-we-had-sockpuppet-in-ios16/#:~:text=Core%20XNU%20types%20and%20their%20potential%20to%20be%20exploited.)
 
 According to Apple's internal testing:
