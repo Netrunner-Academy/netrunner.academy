@@ -2,7 +2,8 @@
 title: Windows Security
 description: A detailed look at the security of Windows
 ---
-import { Aside } from '@astrojs/starlight/components';
+
+import { Aside } from "@astrojs/starlight/components";
 
 ## Exploit Mitigations
 
@@ -12,15 +13,15 @@ Before delving into the specifics of Windows exploit mitigations, it’s crucial
 
 Below is a chart detailing the various exploit mitigations available in Windows, their default settings, and their scope.
 
-| Exploit Mitigations        | Default Setting  | Scope        |
-|----------------------------|------------------|--------------|
-| Control Flow Guard         | On               | System-Wide  | 
-| Data Execution Prevention  | On               | System-Wide  |
-| Mandatory ASLR             | Off              | System-Wide  |
-| Bottom-up ASLR             | On               | System-Wide  |
-| High Entropy ASLR          | On               | System-Wide  |
-| SEHOP                      | On               | System-Wide  |
-| Heap Integrity Validation  | On               | System-Wide  |
+| Exploit Mitigations       | Default Setting | Scope       |
+| ------------------------- | --------------- | ----------- |
+| Control Flow Guard        | On              | System-Wide |
+| Data Execution Prevention | On              | System-Wide |
+| Mandatory ASLR            | Off             | System-Wide |
+| Bottom-up ASLR            | On              | System-Wide |
+| High Entropy ASLR         | On              | System-Wide |
+| SEHOP                     | On              | System-Wide |
+| Heap Integrity Validation | On              | System-Wide |
 
 Let's explore each of these exploit mitigations and their implications for security on Windows.
 
@@ -50,17 +51,19 @@ Let's explore each of these exploit mitigations and their implications for secur
 
 Windows has three ASLR settings.
 
-<Aside>Windows ASLR has some oddities which might be important to know if security is critical for you or your workplace. See [ASLR Oddities](#aslr-oddities) for more information.</Aside>
+<Aside>
+  Windows ASLR has some oddities which might be important to know if security is
+  critical for you or your workplace. See [ASLR Oddities](#aslr-oddities) for
+  more information.
+</Aside>
 
 ### Mandatory ASLR
 
 By default, Windows only enables ASLR for executables and DLLs which opt-in by linking with the `/DYNAMICBASE` flag. This flag has been enabled by default since Visual Studio 2010, but it's still possible for applications to opt out to avoid non-trivial compatibility issues with existing applications.<sup>[3](https://msrc.microsoft.com/blog/2017/11/clarifying-the-behavior-of-mandatory-aslr/)</sup>
 
-
 Mandatory ASLR forcibly rebases all executables and DLLs that have not opted in. This can be forced on a per-application basis or system-wide.
 
 Microsoft disables this by default within Windows to prevent compatibility issues with executable files.
-
 
 ### Bottom-up ASLR
 
@@ -70,8 +73,7 @@ Bottom-up ASLR requires an application to be linked with the `/DYNAMICBASE` flag
 
 The image below helps visualize how and when ASLR applies to applications.
 
-![](../../../assets/aslr.png)
-
+![](../../../assets/windows/aslr.webp)
 
 ### High Entropy ASLR
 
@@ -80,12 +82,12 @@ The `/HIGHENTROPYVA` and `/LARGEADDRESSAWARE` compiler flags specify support for
 Let's take a look at why this matters.
 
 > Prior to Windows 8, 64-bit executable images received the same amount of entropy that was used when randomizing 32-bit executable images (8 bits, or 1 in 256 chance of guessing correctly). The amount of entropy applied to 64-bit images has been significantly increased in most cases starting with Windows 8:
-> 
+>
 > DLL images based above 4 GB: 19 bits of entropy (1 in 524,288 chance of guessing correctly)
 > DLL images based below 4 GB: 14 bits of entropy (1 in 16,384 chance of guessing correctly).
 > EXE images based above 4 GB: 17 bits of entropy (1 in 131,072 chance of guessing correctly).
 > EXE images based below 4 GB: 8 bits of entropy (1 in 256 chance of guessing correctly).
-> 
+>
 > [source](https://msrc.microsoft.com/blog/2013/12/software-defense-mitigating-common-exploitation-techniques/)
 
 According to Microsoft's documentation, not utilizing high entropy ASLR allows an attacker a 1 in 256 chance of correctly guessing a memory address, potentially leading to exploitation. High entropy ASLR significantly decreases the probability of an attacker successfully guessing the correct memory address.
@@ -121,7 +123,7 @@ Windows sleep mode is similar to hibernation, but it keeps all processes running
 ## Structured Exception Handling Overwrite Protection (SEHOP)
 
 > Structured Exception Handling Overwrite Protection (SEHOP) helps prevent attackers from being able to use malicious code to exploit the Structured Exception Handling (SEH), which is integral to the system and allows (non-malicious) apps to handle exceptions appropriately. Because this protection mechanism is provided at run-time, it helps to protect applications regardless of whether they've been compiled with the latest improvements.
-> 
+>
 > [source](https://learn.microsoft.com/en-us/windows/security/threat-protection/overview-of-threat-mitigations-in-windows-10#structured-exception-handling-overwrite-protection)
 
 ## Validate Heap Integrity
@@ -135,7 +137,7 @@ Windows offers numerous additional exploit mitigations that can significantly en
 Because these settings must be configured individually for each application, requiring the specific path for each one, comprehensive documentation on these exploit mitigations will not be provided by Netrunner Academy.
 
 | Exploit Mitigations                 | Scope     |
-|-------------------------------------|-----------|
+| ----------------------------------- | --------- |
 | Arbitrary Code Guard                | App Level |
 | Block Low Integrity Images          | App Level |
 | Block Remote Images                 | App Level |
@@ -152,4 +154,4 @@ Because these settings must be configured individually for each application, req
 | Validate Image Dependency Integrity | App Level |
 | Validate Stack Integrity            | App Level |
 
-## 
+##

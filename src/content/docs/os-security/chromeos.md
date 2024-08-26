@@ -21,7 +21,7 @@ ChromeOS has undergone significant advancements in running Android apps through 
 
 The image below showcases the architectural differences between ARC++ and ARCVM.
 
-![](../../../assets/arcvm.png)
+![](../../../assets/chromeos/arcvm.png)
 
 ARCVM achieves a clean separation between ChromeOS and Android by running Android within a virtual machine (VM). This isolation reduces dependencies and simplifies updates for each system. Let’s look at the ARCVM kernel as an example.
 
@@ -141,13 +141,13 @@ A theoretical concern exists regarding user space "trusted" processes potentiall
 
 The image below shows what this looks like:
 
-![](../../../assets/hyperthread-ipi.png)
+![](../../../assets/chromeos/hyperthread-ipi.webp)
 
 ## Crosvm
 
 ChromeOS utilizes crosvm, a lightweight virtual machine monitor (VMM), to securely run both Linux applications and Android environments. Prioritizing security, crosvm isolates these untrusted environments within sandboxes. Written in Rust, a memory-safe language, crosvm minimizes the risk of vulnerabilities. Each virtual device, like disks and network interfaces, runs within its own minijail sandbox, further restricting potential exploits. This multi-layered approach ensures that even a compromised Linux instance or Android container cannot escape the sandbox and harm the core ChromeOS system. Crosvm strengthens this security by enforcing a syscall security policy, meticulously controlling which system calls guest Linux devices and Android containers can execute.<sup>[7](https://crosvm.dev/book/introduction.html)</sup>
 
-![](../../../assets/cros-vms.png)
+![](../../../assets/chromeos/cros-vms.webp)
 Image from [Zack Reizner's BlinkOn conference presentation](https://youtu.be/BD_lcnkNAk4?feature=shared&t=925)
 
 ### Cicerone
@@ -218,5 +218,5 @@ A lot of SELinux policies are imported from AOSP.
 
 Venus is used for the graphics API in borealis and [ARCVM](#android-runtime-on-chromeos-arcvm).
 
-![](../../../assets/venus.png)
+![](../../../assets/chromeos/venus.png)
 
