@@ -12,7 +12,7 @@ This article is not meant to cause any wars, nor is it meant to call out any ind
 To prevent conflict, as with all other articles on this website, sources will frequently be referenced for all information presented.
 
 ## Architectural issues
-The monolithic nature of the Kernel is a flaw of Linux in itself. While this might fall flat due to a lack of alternatives, but should still be mentioned, as it is a major limiation. Additionaly Linux doesn't have a proper threath model [nor does it have verified boot in any capacity](https://privsec.dev/posts/linux/linux-insecurities/#lack-of-verified-boot). [Secureboot](https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-secure-boot) at the time of writing is easily bypassed too. Immutable distros somewhat attemp to fix the issue of having no distinction between the system and user application, however they aren't truly immutable, and thus don't achieve their goal. 
+The monolithic nature of the Kernel is a flaw of Linux in itself. While this might fall flat due to a lack of alternatives, but should still be mentioned, as it is a major limiation. Additionaly Linux doesn't have a proper threat model [nor does it have verified boot in any capacity](https://privsec.dev/posts/linux/linux-insecurities/#lack-of-verified-boot). [Secureboot](https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-secure-boot) at the time of writing is easily bypassed too. Immutable distros somewhat attemp to fix the issue of having no distinction between the system and user application, however they aren't truly immutable, and thus don't achieve their goal. 
 
 ## The Distribution Fracturing Problem
 
