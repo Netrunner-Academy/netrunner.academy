@@ -7,7 +7,7 @@ Linux security has always been a sensitive subject in the industry, and this art
 
 Before diving into the security practices of the OS, let's make two things clear. First of all, Linux runs our modern world - ChromeOS, Android phones and TVs, cars, fridges, smart devices. It's an amazing operating system and we should all appreciate it for that. Due to the widespread use of Linux, it is one of the most mission-critical pieces of software to ever exist, and as such should be held to extremely high security standards. Secondly, being Open-Source [doesn't make it secure.](https://privsec.dev/posts/knowledge/floss-security/)
 
-This article is not meant to cause any wars, nor is it meant to call out any individual developers of the operating system. The industry widely accepts that Linux security is fundamentally flawed and needs a serious overhaul to provide the security necessary in today's world. Hopefully, this article will inform both those that have a lot of experience with Linux, and those with very little. The hope is to encourage Linux security to be better.
+This article is not meant to cause any wars, nor is it meant to call out any individual developers of the operating system. The industry widely accepts that Linux security is fundamentally flawed and needs a serious overhaul to provide the security necessary in today's world. Hopefully, this article will inform both those that are experienced with Linux, and those with very little. The hope is to encourage Linux security to be better.
 
 To prevent conflict, as with all other articles on this website, sources will frequently be referenced for all information presented.
 
