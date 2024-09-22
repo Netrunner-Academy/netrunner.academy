@@ -12,7 +12,7 @@ This article is not meant to cause any wars, nor is it meant to call out any ind
 To prevent conflict, as with all other articles on this website, sources will frequently be referenced for all information presented.
 
 ## Lack of Verified boot
-To have verified boot, an OS has to have a seperate system volume that is signed by the OS vendor. The Firmware then makes sure that the volume has the correct signature. For that to be possible, the OS has to be fully immutable, there is currently no Linux Distribution that achieves this. "Immutable" Distributions such as Silverblue aren't fully immutable. Fedora is currently working on a way to fix this by introducing proper [UKI](https://uapi-group.org/specifications/specs/unified_kernel_image/) support <sup>[1](https://fedoraproject.org/wiki/Changes/Unified_Kernel_Support_Phase_2#Benefit_to_Fedora)</sup>
+To have verified boot, an OS needs to have a seperate system volume that is signed by the OS vendor. The Firmware then makes sure that the volume has the correct signature. For that to be possible, the OS has to be fully immutable, there is currently no Linux Distribution that achieves this. "Immutable" Distributions such as Silverblue aren't fully immutable.[1](https://docs.fedoraproject.org/en-US/iot/adding-layered/) Fedora is currently working on a way to fix this by introducing proper [UKI](https://uapi-group.org/specifications/specs/unified_kernel_image/) support <sup>[2](https://fedoraproject.org/wiki/Changes/Unified_Kernel_Support_Phase_2#Benefit_to_Fedora)</sup> For the same reason, [Secureboot](https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-secure-boot) isn't properly implemented yet either.
 
 ## The Distribution Fracturing Problem
 
