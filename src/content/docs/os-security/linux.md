@@ -11,8 +11,8 @@ This article is not meant to cause any wars, nor is it meant to call out any ind
 
 To prevent conflict, as with all other articles on this website, sources will frequently be referenced for all information presented.
 
-## Architectural issues
-Linux doesn't have a proper threat model [nor does it have verified boot in any capacity](https://privsec.dev/posts/linux/linux-insecurities/#lack-of-verified-boot). [Secureboot](https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-secure-boot) at the time of writing isn't *yet* properly implemented either, although Fedora is close to fixing this. <sup>[1](https://fedoraproject.org/wiki/Changes/Unified_Kernel_Support_Phase_2#Benefit_to_Fedora)</sup> Immutable distros somewhat attemp to fix the issue of having no distinction between the system and user application, however they aren't truly immutable, as applications still can be layered and thus the system isn't truly immutable. Every Linux distro also has a [Shell](https://en.wikipedia.org/wiki/Shell_%28computing%29), and requires a privileged user to adminestrate the system. ChromeOS, just like Android entierly removes this functionality for attack surface reduction. <sup>[2](https://www.chromium.org/chromium-os/developer-library/reference/security/security-whitepaper/#root-versus-the-os-kernel)</sup>
+## Lack of Verified boot
+To have verified boot, an OS has to have a seperate system volume that is signed by the OS vendor. The Firmware then makes sure that the volume has the correct signature. For that to be possible, the OS has to be fully immutable, there is currently no Linux Distribution that achieves this. "Immutable" Distributions such as Silverblue aren't fully immutable. Fedora is currently working on a way to fix this by introducing proper [UKI](https://uapi-group.org/specifications/specs/unified_kernel_image/) support <sup>[1](https://fedoraproject.org/wiki/Changes/Unified_Kernel_Support_Phase_2#Benefit_to_Fedora)</sup>
 
 ## The Distribution Fracturing Problem
 
