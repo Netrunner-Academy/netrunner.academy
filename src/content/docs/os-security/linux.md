@@ -68,7 +68,9 @@ This process creates a lot of unnecessary duplicated effort within the Linux com
 
 ### Exploit mitigations
 
-Similarly to how a lot of distributions maintain their own kernel, the same is true for exploit mitigations, it's all over the place. [Fedora](https://fedoraproject.org/) stands out as having arguably the most effective ones, the Project has an entire [Article](https://fedoraproject.org/wiki/Security_Features) about them. [Secureblue](https://github.com/secureblue/secureblue) also mentions that Fedora is one of the few distributions that ships with SELinux tooling built-in and enabled by default.
+Similarly to how a lot of distributions maintain their own kernel, the same is true for exploit mitigations. [Fedora](https://fedoraproject.org/) and [Ubuntu](https://ubuntu.com/) stand out as having some of the best exploit mitigations. See [Fedora's security docs](https://fedoraproject.org/wiki/Security_Features) and [Ubuntu's security docs](https://wiki.ubuntu.com/Security/Features) for the latest exploit mitigations in place for both distributions.
+
+[Secureblue](https://github.com/secureblue/secureblue) is a community project based on Fedora which adds additional hardening to the system. See Secureblue's GitHub for additional information on the project.
 
 [Ubuntu](https://ubuntu.com/download) also has a [list](https://wiki.ubuntu.com/Security/Features) of mitigations they apply, including [using](https://wiki.ubuntu.com/Security/Features#kernel-lockdown:~:text=for%20regression%20tests.-,Built%20with%20%2Dfcf%2Dprotection,-Instructs%20the%20compiler) intel's [CFI](https://www.intel.com/content/www/us/en/developer/articles/technical/technical-look-control-flow-enforcement-technology.html), which is an important exploit mitigation, even if not as extensive as [hardened_malloc](https://github.com/GrapheneOS/hardened_malloc). However The Problems with backporting and outdated packages described prior still stand. 
 
