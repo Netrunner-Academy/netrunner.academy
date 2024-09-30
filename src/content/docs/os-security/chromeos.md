@@ -3,15 +3,15 @@ title: ChromeOS
 description: A detailed look at the security of ChromeOS
 ---
 
-ChromeOS is the most secure consumer OS currently on the market. It employs an extremely extensive defence-in-depth security model. 
+ChromeOS is the most secure consumer OS currently on the market. It employs an extremely extensive defence-in-depth security model and has a detailed Whitepaper on it.<sup>[1](https://www.chromium.org/chromium-os/developer-library/reference/security/security-whitepaper/)</sup>
 
 ## Update Cycle
 
-ChromeOS follows the weekly Chrome release cycle.<sup>[1](https://security.googleblog.com/2023/08/an-update-on-chrome-security-updates.html)</sup> This can be verified by checking the [Chrome updates page](https://chromereleases.googleblog.com/search/label/Stable%20updates) which shows ChromeOS getting weekly stable updates.
+ChromeOS follows the weekly Chrome release cycle.<sup>[2](https://security.googleblog.com/2023/08/an-update-on-chrome-security-updates.html)</sup> This can be verified by checking the [Chrome updates page](https://chromereleases.googleblog.com/search/label/Stable%20updates) which shows ChromeOS getting weekly stable updates.
 
 ## Android Runtime on ChromeOS (ARCVM)
 
-ChromeOS has undergone significant advancements in running Android apps through three iterations of Android Runtime for ChromeOS (ARC)<sup>[2](https://chromeos.dev/en/posts/making-android-runtime-on-chromeos-more-secure-and-easier-to-upgrade-with-arcvm#what-is-arc)</sup>:
+ChromeOS has undergone significant advancements in running Android apps through three iterations of Android Runtime for ChromeOS (ARC)<sup>[3](https://chromeos.dev/en/posts/making-android-runtime-on-chromeos-more-secure-and-easier-to-upgrade-with-arcvm#what-is-arc)</sup>:
 
 - ARC (2014): The initial version relied on Native Client ([NaCl](https://developer.chrome.com/docs/native-client/)), requiring app recompilation and limiting users to a curated selection by Google.
 
@@ -110,7 +110,7 @@ Read-only, dm-verity verified. Downloaded, updated and verified by component upd
 
 ## Core Scheduling
 
-Recent CPU vulnerabilities, particularly those targeting hyperthreading, have highlighted security risks. The discovery of [Microarchitectural Data Sampling (MDS) attacks](https://mdsattacks.com/), like [Rogue In-Flight Data Load (RIDL)](https://mdsattacks.com/files/ridl.pdf) and [fallout](https://mdsattacks.com/files/fallout.pdf), allows malicious actors to exploit weaknesses within a CPU core. These attacks enable one hyperthread to glean sensitive data from another by analyzing side-channel information. While disabling hyperthreading is a typical defense against such vulnerabilities, it often comes at the expense of processing speed.<sup>[3](https://chromeos.dev/en/posts/improving-chromeos-performance-with-core-scheduling)</sup> Google's bug hunters blog has an [excellent writeup on MDS attacks](https://bughunters.google.com/blog/4712170091839488/no-more-speculation-exploiting-cpu-side-channels-for-real) for those that want to learn more about MDS vulnerabilities.
+Recent CPU vulnerabilities, particularly those targeting hyperthreading, have highlighted security risks. The discovery of [Microarchitectural Data Sampling (MDS) attacks](https://mdsattacks.com/), like [Rogue In-Flight Data Load (RIDL)](https://mdsattacks.com/files/ridl.pdf) and [fallout](https://mdsattacks.com/files/fallout.pdf), allows malicious actors to exploit weaknesses within a CPU core. These attacks enable one hyperthread to glean sensitive data from another by analyzing side-channel information. While disabling hyperthreading is a typical defense against such vulnerabilities, it often comes at the expense of processing speed.<sup>[4](https://chromeos.dev/en/posts/improving-chromeos-performance-with-core-scheduling)</sup> Google's bug hunters blog has an [excellent writeup on MDS attacks](https://bughunters.google.com/blog/4712170091839488/no-more-speculation-exploiting-cpu-side-channels-for-real) for those that want to learn more about MDS vulnerabilities.
 
 While a brute-force approach of disabling the vulnerable functionality might appear effective for mitigating CPU vulnerabilities, it often incurs a substantial performance penalty.
 
@@ -123,9 +123,9 @@ Core scheduling in ChromeOS relies on collaboration between user space and the k
 
 - 2-runqueue mode: Each hyperthread has its own runqueue, allowing tasks to run independently.
 
-The chosen mode depends on the task priorities and compatibility within the group.<sup>[4](https://chromeos.dev/en/posts/improving-chromeos-performance-with-core-scheduling#core-scheduling-in-chromeos:~:text=In%20order%20to,with%20each%20other.)</sup>
+The chosen mode depends on the task priorities and compatibility within the group.<sup>[5](https://chromeos.dev/en/posts/improving-chromeos-performance-with-core-scheduling#core-scheduling-in-chromeos:~:text=In%20order%20to,with%20each%20other.)</sup>
 
-There are three primary users of core scheduling in ChromeOS:<sup>[5](https://chromeos.dev/en/posts/improving-chromeos-performance-with-core-scheduling#core-scheduling-in-chromeos:~:text=In%20ChromeOS%20there,parent%20and%20siblings.)</sup>
+There are three primary users of core scheduling in ChromeOS:<sup>[6](https://chromeos.dev/en/posts/improving-chromeos-performance-with-core-scheduling#core-scheduling-in-chromeos:~:text=In%20ChromeOS%20there,parent%20and%20siblings.)</sup>
 
 - Chrome Browser: When a renderer process is created, Chrome assigns a unique group before entering the sandbox. This design grants ChromeOS the necessary privilege to assign the group but prevents modifications once secure isolation is established.
 
@@ -137,7 +137,7 @@ There are three primary users of core scheduling in ChromeOS:<sup>[5](https://ch
 
 ### Addressing Kernel Space Concerns
 
-A theoretical concern exists regarding user space "trusted" processes potentially compromising security. This is because a hyperthread can enter the kernel while its sibling remains in user space. To address this, ChromeOS employs per-CPU counters to monitor a core-wide "unsafe state." This state activates whenever a core's hyperthread transitions to kernel mode. When in this unsafe state, ChromeOS utilizes Inter-processor interrupts (IPI) to temporarily remove all hyperthreads from user space, excluding those already idle. Google's testing demonstrates this mechanism has minimal performance impact.<sup>[6](https://chromeos.dev/en/posts/improving-chromeos-performance-with-core-scheduling#core-scheduling-in-chromeos:~:text=There%20is%20still,showing%20an%20example%3A)</sup>
+A theoretical concern exists regarding user space "trusted" processes potentially compromising security. This is because a hyperthread can enter the kernel while its sibling remains in user space. To address this, ChromeOS employs per-CPU counters to monitor a core-wide "unsafe state." This state activates whenever a core's hyperthread transitions to kernel mode. When in this unsafe state, ChromeOS utilizes Inter-processor interrupts (IPI) to temporarily remove all hyperthreads from user space, excluding those already idle. Google's testing demonstrates this mechanism has minimal performance impact.<sup>[7](https://chromeos.dev/en/posts/improving-chromeos-performance-with-core-scheduling#core-scheduling-in-chromeos:~:text=There%20is%20still,showing%20an%20example%3A)</sup>
 
 The image below shows what this looks like:
 
@@ -145,7 +145,7 @@ The image below shows what this looks like:
 
 ## Crosvm
 
-ChromeOS utilizes crosvm, a lightweight virtual machine monitor (VMM), to securely run both Linux applications and Android environments. Prioritizing security, crosvm isolates these untrusted environments within sandboxes. Written in Rust, a memory-safe language, crosvm minimizes the risk of vulnerabilities. Each virtual device, like disks and network interfaces, runs within its own minijail sandbox, further restricting potential exploits. This multi-layered approach ensures that even a compromised Linux instance or Android container cannot escape the sandbox and harm the core ChromeOS system. Crosvm strengthens this security by enforcing a syscall security policy, meticulously controlling which system calls guest Linux devices and Android containers can execute.<sup>[7](https://crosvm.dev/book/introduction.html)</sup>
+ChromeOS utilizes crosvm, a lightweight virtual machine monitor (VMM), to securely run both Linux applications and Android environments. Prioritizing security, crosvm isolates these untrusted environments within sandboxes. Written in Rust, a memory-safe language, crosvm minimizes the risk of vulnerabilities. Each virtual device, like disks and network interfaces, runs within its own minijail sandbox, further restricting potential exploits. This multi-layered approach ensures that even a compromised Linux instance or Android container cannot escape the sandbox and harm the core ChromeOS system. Crosvm strengthens this security by enforcing a syscall security policy, meticulously controlling which system calls guest Linux devices and Android containers can execute.<sup>[8](https://crosvm.dev/book/introduction.html)</sup>
 
 ![](../../../assets/chromeos/cros-vms.webp)
 Image from [Zack Reizner's BlinkOn conference presentation](https://youtu.be/BD_lcnkNAk4?feature=shared&t=925)
