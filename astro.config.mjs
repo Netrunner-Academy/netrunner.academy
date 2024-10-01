@@ -9,7 +9,7 @@ export default defineConfig({
 			title: 'Netrunner Academy',
 			social: {
 				github: 'https://github.com/miahacybersec',
-				signal: 'https://signal.me/#eu/xJL5Uush7CTieP5Zd5GGCIW53o6rS2Zq4oX8Vu31FhR_MmSZgRVGPYbta2iAf4Ep'
+				signal: 'https://signal.me/#eu/uMi0jCmn-sROI_W4ONWRWkoh7LFN1TVh8P9d-HyR2njyYHpv_yVIN6at0dp-dtez'
 			},
 			sidebar: [
 				{
