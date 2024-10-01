@@ -3,7 +3,7 @@ title: ChromeOS
 description: A detailed look at the security of ChromeOS
 ---
 
-ChromeOS is the most secure consumer OS currently on the market. It employs an extremely extensive defence-in-depth security model and has a detailed Whitepaper on it.<sup>[1](https://www.chromium.org/chromium-os/developer-library/reference/security/security-whitepaper/)</sup>
+ChromeOS is the most secure consumer desktop OS currently on the market. It employs an extremely extensive defence-in-depth security model and has a detailed Whitepaper on it.<sup>[1](https://www.chromium.org/chromium-os/developer-library/reference/security/security-whitepaper/)</sup>
 
 ## Update Cycle
 
