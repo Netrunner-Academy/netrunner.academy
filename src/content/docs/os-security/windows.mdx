@@ -120,6 +120,29 @@ Hibernation works by saving a `Hiberfil.sys` system file to the root of the driv
 
 Windows sleep mode is similar to hibernation, but it keeps all processes running in RAM rather than saving RAM to the disk. This means that booting from sleep allows Windows to reuse the same memory addresses for processes that were running before entering sleep.
 
+## Hardware-enforced Stack Protection
+
+Windows has support for hardware-enforced stack protection which is a critical security feature in modern operating systems due to the enhanced protection these features provide.
+
+In essence, hardware-enforced stack protection is a feature at the CPU level which push the return address on both stacks and return instructions, compares the values, and issues an exception if there is a return address mismatch. By doing these additional checks in hardware, we can effectively mitigate [Return-Oriented Programming (ROP)](https://www.cs.utexas.edu/~hovav/dist/rop.pdf) and [Jump-Oriented Programming (JOP)](https://www.comp.nus.edu.sg/~liangzk/papers/asiaccs11.pdf), two common attack vectors in modern software.
+
+This feature is only supported on hardware which supports [shadow stacks](https://en.wikipedia.org/wiki/Shadow_stack), a hardware-enforced read-only memory region that helps keep record of the intended control-flow of the program.<sup>[7](https://techcommunity.microsoft.com/t5/windows-os-platform-blog/developer-guidance-for-hardware-enforced-stack-protection/ba-p/2163340#:~:text=Shadow%20stack%20is,have%20this%20feature.)</sup> Intel 11th gen and AMD Zen 3 processors and newer support this feature.
+
+The implementation of this feature varies by CPU manufacturer with some being more complete than others, so there is a dedicated section to each manufacturer's current implementation in the CPU docs.
+
+Hardware-enforced stack protection is only enforced for Windows applications which have been compiled with the `/CETCOMPAT` compiler flag. Alternatively, applications can choose to dynamically enable shadow stack enforcement by using the [proc thread attribute mitigation policy](https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-updateprocthreadattribute) attribute in CreateProcess. All native 64-bit Windows DLLs are compiled with `/CETCOMPAT`.<sup>[8](https://techcommunity.microsoft.com/t5/windows-os-platform-blog/developer-guidance-for-hardware-enforced-stack-protection/ba-p/2163340#:~:text=Note%20that%20all%20native%2064%2Dbit%20Windows%20DLLs%20are%20compiled%20with%20/CETCOMPAT.)</sup>
+
+Below is a diagram showing how the system behaves with shadow stacks (strict mode) and without (compatibility mode).
+
+![](../../../assets/windows/shadow_stack_compatibility_mode.png)
+
+![](../../../assets/windows/shadow_stack_stric_mode.png)
+Images from [Microsoft's shadow stack writeup](https://techcommunity.microsoft.com/t5/windows-os-platform-blog/developer-guidance-for-hardware-enforced-stack-protection/ba-p/2163340)
+
+It should be noted that this feature, like other Windows security features mentioned in this article, can be forcefully enabled on a per-application basis through Windows defender as long as your CPU supports the feature.
+
+![](../../../assets/windows/stack_protection_force_enable.png)
+
 ## Structured Exception Handling Overwrite Protection (SEHOP)
 
 > Structured Exception Handling Overwrite Protection (SEHOP) helps prevent attackers from being able to use malicious code to exploit the Structured Exception Handling (SEH), which is integral to the system and allows (non-malicious) apps to handle exceptions appropriately. Because this protection mechanism is provided at run-time, it helps to protect applications regardless of whether they've been compiled with the latest improvements.
