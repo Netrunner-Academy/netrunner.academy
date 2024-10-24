@@ -8,7 +8,7 @@ export default defineConfig({
 			favicon: '/favicon.png',
 			title: 'Netrunner Academy',
 			social: {
-				github: 'https://github.com/miahacybersec',
+				github: 'https://github.com/Netrunner-Academy',
 				signal: 'https://signal.me/#eu/uMi0jCmn-sROI_W4ONWRWkoh7LFN1TVh8P9d-HyR2njyYHpv_yVIN6at0dp-dtez'
 			},
 			sidebar: [
