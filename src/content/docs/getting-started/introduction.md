@@ -1,6 +1,6 @@
 ---
 title: Introduction
-description: A guide in my new Starlight docs site.
+description: Netrunner Academy provides in-depth security information on a variety of operating systems
 ---
 
 ### What is this website?
