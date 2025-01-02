@@ -20,6 +20,13 @@ export default defineConfig({
 					],
 				},
 				{
+					label: 'CPU Security',
+					collapsed: false,
+					items: [
+						{ label: 'CPU Security', link: '/cpu-security/cpu-security/'}
+					]
+				},
+				{
 					label: 'OS Security',
 					collapsed: false,
 					items: [
