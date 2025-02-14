@@ -40,10 +40,32 @@ Intel’s Control-Flow Enforcement Technology (CET) uses shadow stacks to ensure
 > 
 > [source](https://edc.intel.com/content/www/us/en/design/ipla/software-development-platforms/client/platforms/alder-lake-desktop/12th-generation-intel-core-processors-datasheet-volume-1-of-2/006/indirect-branch-tracking/)
 
+### Intel Partner Security Engine (IPSE)
+
+The [Intel Partner Security Engine (IPSE)](https://community.intel.com/t5/Blogs/Tech-Innovation/Client/Intel-Partner-Security-Engine/post/1661658) is responsible for creating a root of trust within a given system, and meeting Microsoft Pluton's security requirements.
+
 ## AMD
 
 AMD is unfortunately not good at communicating the security features of their processors. As such, information on AMD processors might be more limited than Intel processors.
 
+### Pluton
+
+Ryzen 6000 series pioneered Pluton capabilities as seen in [the NIST certification](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/4880).
+
 ### Shadow Stack
 
 AMD has very little public information about their shadow stack implementation. However, [based on firmware release notes](https://www.amd.com/en/resources/support-articles/release-notes/RN-RYZEN-CHIPSET-6-10-17-152.html) we can confirm that AMD Ryzen 3000 series and newer have shadow stack support.
+
+## Qualcomm
+
+### ARM Pointer Authentication
+
+Qualcomm utilizes [ARM pointer authentication version 8.3](https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/pointer-auth-v7.pdf) to implement [control-flow integrity (CFI)](https://en.wikipedia.org/wiki/Control-flow_integrity).
+
+### Secure Boot
+
+Qualcomm has an [extremely detailed writeup](https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/secure-boot-and-image-authentication.pdf) on how their secure boot implementation works.
+
+### Secure Processing Unit (SPU)
+
+While there is no direct documentation from Qualcomm themselves, the SPU is [registered with NIST](https://csrc.nist.gov/CSRC/media/projects/cryptographic-module-validation-program/documents/security-policies/140sp3549.pdf) to showcase its cryptographic capabilities to the public. The SPU is responsible for ensuring secure cryptographic operations for payments, biometrics, and other sensitive data. In the case of Windows, the SPU is what enables [Microsoft Pluton](https://www.microsoft.com/security/blog/2020/11/17/meet-the-microsoft-pluton-processor-the-security-chip-designed-for-the-future-of-windows-pcs/) to function.
